@@ -1,35 +1,36 @@
 class Solution {
-public:
-    vector<vector<string>> partition(string s) {
-        vector<vector<string>> res;
-        vector<string> part;
-        dfs(0, s, part, res);
-        return res;
-    }
-
 private:
-    void dfs(int i, const string& s, vector<string>& part, vector<vector<string>>& res) {
-        if (i >= s.length()) {
-            res.push_back(part);
-            return;
-        }
-        for (int j = i; j < s.length(); j++) {
-            if (isPali(s, i, j)) {
-                part.push_back(s.substr(i, j - i + 1));
-                dfs(j + 1, s, part, res);
-                part.pop_back();
-            }
-        }
-    }
-
-    bool isPali(const string& s, int l, int r) {
-        while (l < r) {
-            if (s[l] != s[r]) {
-                return false;
-            }
+    bool isPalindrome(string &s, int l, int r){
+        while(l < r){
+            if(s[l] != s[r]) return false;
             l++;
             r--;
         }
         return true;
+    }
+
+    void partition(int i, string &s, vector<string> &par, vector<vector<string>> &result){
+        if( i == s.length()){
+            result.push_back(par);
+            return;
+        }
+
+        for(int j = i; j < s.length(); j++){
+            if(isPalindrome(s, i, j)){
+                par.push_back(s.substr(i, j - i + 1));
+                partition(j + 1, s, par, result);
+                par.pop_back();
+            }
+        }
+    }
+
+
+public:
+    vector<vector<string>> partition(string s) {
+        vector<vector<string>> result;
+        vector<string> par;
+        int i = 0;
+        partition(i, s, par, result);
+        return result;    
     }
 };
