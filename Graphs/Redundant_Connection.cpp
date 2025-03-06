@@ -1,31 +1,20 @@
 class Solution {
 public:
     vector<int> findRedundantConnection(vector<vector<int>>& edges) {
-        int n = edges.size();
-        vector<vector<int>> adj(n + 1);
-
-        for (const auto& edge : edges) {
-            int u = edge[0], v = edge[1];
-            adj[u].push_back(v);
-            adj[v].push_back(u);
-            vector<bool> visit(n + 1, false);
-
-            if (dfs(u, -1, adj, visit)) {
-                return {u, v};
-            }
+        vector<int> p(2000, 0);
+        for(int i = 0; i < p.size(); i++ )
+            p[i] = i;
+        
+        vector<int> res;
+        for(auto v : edges ){
+            int n1 = v[0], n2 = v[1];
+            while(n1 != p[n1]) n1 = p[n1];
+            while(n2 != p[n2]) n2 = p[n2];
+            if( n1 == n2 )
+                res = v;
+            else
+                p[n1] = n2;
         }
-        return {};
-    }
-
-private:
-    bool dfs(int node, int parent, 
-             vector<vector<int>>& adj, vector<bool>& visit) {
-        if (visit[node]) return true;
-        visit[node] = true;
-        for (int nei : adj[node]) {
-            if (nei == parent) continue;
-            if (dfs(nei, node, adj, visit)) return true;
-        }
-        return false;
+        return res;
     }
 };
