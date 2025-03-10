@@ -1,26 +1,32 @@
 class Solution {
 public:
     int networkDelayTime(vector<vector<int>>& times, int n, int k) {
-        unordered_map<int, vector<pair<int, int>>> adj;
-        for (auto& time : times) {
-            adj[time[0]].emplace_back(time[1], time[2]);
+        vector<pair<int, int>> graph[n+1];
+        for(auto time : times){
+            graph[time[0]].push_back({time[1], time[2]});
+        }
+        vector<int> dis(n+1, INT_MAX);
+        priority_queue<pair<int, int>, vector<pair<int, int>>, greater<pair<int, int>>> mheap;
+        mheap.push({0,k});
+        dis[k] = 0;
+
+        while(!mheap.empty()){
+            auto curr = mheap.top();
+            mheap.pop();
+            for(auto it : graph[curr.second]){
+                if(dis[it.first] > dis[curr.second] + it.second){
+                dis[it.first] = dis[curr.second] + it.second;
+                mheap.push({dis[it.first], it.first});
+                }
+            }
         }
 
-        vector<int> dist(n + 1, INT_MAX);
-        dfs(k, 0, adj, dist);
+        int ans = INT_MIN;
+        for(int i = 1; i < n + 1; i++){
+            if(dis[i] == INT_MAX) return -1;
+            ans = max(ans, dis[i]);
+        }
+        return ans;
         
-        int res = *max_element(dist.begin() + 1, dist.end());
-        return res == INT_MAX ? -1 : res;
-    }
-
-private:
-    void dfs(int node, int time, 
-             unordered_map<int, vector<pair<int, int>>>& adj, 
-             vector<int>& dist) {
-        if (time >= dist[node]) return;
-        dist[node] = time;
-        for (auto& [nei, w] : adj[node]) {
-            dfs(nei, time + w, adj, dist);
-        }
     }
 };
