@@ -3,10 +3,10 @@ public:
     int coinChange(vector<int>& coins, int amount) {
         vector<int> dp(amount + 1, amount + 1);
         dp[0] = 0;
-        for (int i = 1; i <= amount; i++) {
-            for (int j = 0; j < coins.size(); j++) {
-                if (coins[j] <= i) {
-                    dp[i] = min(dp[i], dp[i - coins[j]] + 1);
+        for (int m = 1; m <= amount; m++) {
+            for (int n = 0; n < coins.size(); n++) {
+                if (coins[n] <= m) {
+                    dp[m] = min(dp[m], dp[m - coins[n]] + 1);
                 }
             }
         }
