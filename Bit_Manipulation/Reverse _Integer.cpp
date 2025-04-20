@@ -1,17 +1,21 @@
 class Solution {
 public:
     int reverse(int x) {
-        int org = x;
-        x = abs(x);
-        string strX = to_string(x);
-        std::reverse(strX.begin(), strX.end());
-        long long res = stoll(strX); 
-        if (org < 0) {
-            res *= -1;
+        const int min = -2147483648; // -2^31
+        const int max = 2147483647;  // 2^31 - 1
+
+        int result = 0;
+        while (x) {
+            int digit = x % 10;
+            x /= 10;
+
+            if (result > max / 10 || (result == max / 10 && digit > max % 10))
+                return 0;
+            if (result < min / 10 || (result == min / 10 && digit < min % 10))
+                return 0;
+            result = (result * 10) + digit;
         }
-        if (res < -(1LL << 31) || res > (1LL << 31) - 1) {
-            return 0;
-        }
-        return static_cast<int>(res);
+
+        return result;
     }
 };
